@@ -1,12 +1,11 @@
 ---
 title: "First Post"
 date: 2024-01-05 00:00:00 +0800
-categories: [First Post]
+categories: [Thoughts]
 tags: [First Post]
 
 ---
 
 
 
-Hello,
-This is my First post.
+A thought not articulated is a crop not harvested.
