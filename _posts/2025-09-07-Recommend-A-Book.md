@@ -50,7 +50,7 @@ Thanks!
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/wordcloud2.js/1.1.1/wordcloud2.min.js"></script>
 <script>
-const scriptURL = "https://script.google.com/macros/s/AKfycbx5PUwHWYn-a3DUdqTJGWdQ3CrvDiSlmea9JC2z1wAYXVJoFSTIwG8wmKZF1O0pFkg/exec"; // <-- paste your deployed Apps Script Web App URL
+const scriptURL = "https://script.google.com/macros/s/AKfycbxvXkCTLnIqi1P2yS7WzySwFQH_yTauM1NJ3w3YyGNey_3-a_H3fLP542mKkxAwEwM/exec"; // <-- paste your deployed Apps Script Web App URL
 const form = document.getElementById("book-form");
 const thankMessage = document.getElementById("thank-message");
 // Form submission
