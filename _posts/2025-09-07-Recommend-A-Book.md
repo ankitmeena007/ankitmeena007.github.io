@@ -22,7 +22,6 @@ Thanks!
   <input type="text" id="name" name="name" placeholder=""/>
   <label>Book Recommendation</label>
   <input type="text" id="book" name="book" placeholder="" required/>
-  <!-- <div id="captcha-container" style="display:none; margin:1rem auto; text-align:center;"></div> -->
   <button type="submit">Submit</button>
   <p id="thank-message" class="thank-message" style="text-align:center; display:none;"></p>
 </form>
@@ -41,10 +40,10 @@ Thanks!
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/wordcloud2.js/1.1.1/wordcloud2.min.js"></script>
 <script>
-const scriptURL = "https://script.google.com/macros/s/AKfycbx5PUwHWYn-a3DUdqTJGWdQ3CrvDiSlmea9JC2z1wAYXVJoFSTIwG8wmKZF1O0pFkg/exec"; // <-- your Apps Script URL
+const scriptURL = "https://script.google.com/macros/s/AKfycbx5PUwHWYn-a3DUdqTJGWdQ3CrvDiSlmea9JC2z1wAYXVJoFSTIwG8wmKZF1O0pFkg/exec"; // <-- replace with Apps Script Web App URL
 const form = document.getElementById("book-form");
 const thankMessage = document.getElementById("thank-message");
-// Track submissions per day in localStorage
+// Track submissions locally (extra safeguard)
 function getTodayKey() { return "submissions_" + new Date().toISOString().slice(0,10); }
 function getSubmissionCount() { return parseInt(localStorage.getItem(getTodayKey()) || "0", 10); }
 function incrementSubmissionCount(by = 1) { localStorage.setItem(getTodayKey(), getSubmissionCount() + by); }
@@ -52,20 +51,14 @@ function incrementSubmissionCount(by = 1) { localStorage.setItem(getTodayKey(), 
 form.addEventListener("submit", async e => {
   e.preventDefault();
   const name = document.getElementById("name").value || "Anonymous";
-  let booksInput = document.getElementById("book").value;
-  // Split multiple books by comma
-  const books = booksInput.split(',').map(b => 
-    b.trim().replace(/\s+/g,' ')
-      .split(' ')
-      .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
-      .join(' ')
-  ).filter(b => b); // remove empty strings
+  const booksInput = document.getElementById("book").value;
+  const books = booksInput.split(',')
+    .map(b => b.trim())
+    .filter(b => b.length > 0);
   try {
     let acceptedCount = 0;
-    for (let i = 0; i < books.length; i++) {
-      const payload = { name, book: books[i] };
-      // Include captcha token if you re-enable it
-      // if (captchaNeeded) payload.captcha = grecaptcha.getResponse(captchaWidgetId);
+    for (let book of books) {
+      const payload = { name, book };
       const res = await fetch(scriptURL, { 
         method:"POST",
         headers: { "Content-Type":"application/json" },
@@ -74,7 +67,7 @@ form.addEventListener("submit", async e => {
       const result = await res.json();
       if(result.result === "success") acceptedCount++;
       else {
-        showMessage("Error adding '" + books[i] + "': " + result.message, true);
+        showMessage("Error: " + result.message, true);
       }
     }
     if (acceptedCount > 0) {
@@ -88,14 +81,14 @@ form.addEventListener("submit", async e => {
     showMessage("Error submitting. Please try again.", true);
   }
 });
-// Function to display a temporary message
+// Show temporary message
 function showMessage(msg, isError = false) {
   thankMessage.style.display = "block";
   thankMessage.style.color = isError ? "#ef4444" : "#10b981";
   thankMessage.textContent = msg;
   setTimeout(() => { thankMessage.style.display = "none"; }, 2000);
 }
-// Load word cloud including ALL books
+// Load word cloud from sheet
 async function loadWordCloud() {
   try {
     const res = await fetch(scriptURL);
@@ -103,9 +96,7 @@ async function loadWordCloud() {
     const counts = {};
     data.forEach(entry => {
       if(entry.book) {
-        const b = entry.book.trim().replace(/\s+/g,' ')
-          .split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
-          .join(' ');
+        const b = entry.book.trim();
         if(b) counts[b] = (counts[b] || 0) + 1;
       }
     });
@@ -123,4 +114,3 @@ async function loadWordCloud() {
 }
 loadWordCloud();
 </script>
-
