@@ -6,7 +6,8 @@ tags: [Books, Book recommendations]
 ---
 
 ### Share your recommendations below.
-They will be added to the recommendations word cloud.
+They will be added to the recommendations cloud. Thanks!
+
 <div id="wordcloud-section" style="text-align:center;">
   <div id="wordcloud" style="width:100%; height:400px; margin:1rem auto;"></div>
 </div>
@@ -16,12 +17,14 @@ They will be added to the recommendations word cloud.
 
 <form id="book-form" class="modern-form">
   <label>Your Name (optional)</label>
-  <input type="text" id="name" name="name" placeholder=""/>
+  <input type="text" id="name" name="entry.1008954829" placeholder=""/>
   <label>Book Recommendation</label>
-  <input type="text" id="book" name="book" placeholder="" required/>
-  <button type="button" id="submit-btn">Submit</button>
+  <input type="text" id="book" name="entry.1518169936" placeholder="" required/>
+  <button type="submit">Submit</button>
   <p id="thank-message" class="thank-message" style="text-align:center; display:none;"></p>
 </form>
+
+<iframe name="hidden_iframe" style="display:none;"></iframe>
 
 <style>
 .modern-form { display:flex; flex-direction:column; max-width:500px; margin:2rem auto; gap:1rem; }
@@ -34,55 +37,39 @@ They will be added to the recommendations word cloud.
 .thank-message { margin-top:1rem; font-weight:600; animation:fadeIn 0.3s ease-in-out; }
 @keyframes fadeIn { from { opacity:0; transform:translateY(-5px);} to {opacity:1; transform:translateY(0);} }
 </style>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/wordcloud2.js/1.1.1/wordcloud2.min.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-  const scriptURL = "https://script.google.com/macros/s/AKfycbx9u9xYRgF9F2vAsD5N8Y_6Ft6_OvxB80NDdrj6wNEhRUnGNKY2hAJjTdK3mS98XVE/exec";
   const form = document.getElementById("book-form");
-  const submitBtn = document.getElementById("submit-btn");
   const thankMessage = document.getElementById("thank-message");
-
-  submitBtn.addEventListener("click", async () => {
-    const name = document.getElementById("name").value || "Anonymous";
+  const googleFormAction = "https://docs.google.com/forms/d/1AU2pD59UoAfBe8egyBJc5NGH_kScMf4hnvuZ4_5aInM/formResponse";
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const name = document.getElementById("name").value.trim() || "Anonymous";
     const book = document.getElementById("book").value.trim();
     if (!book) return;
-
-    try {
-      const formData = new FormData();
-      formData.append("name", name);
-      formData.append("book", book);
-
-      const res = await fetch(scriptURL, { method: "POST", body: formData });
-      const result = await res.json();
-
-      if (result.result === "success") {
-        showMessage("Successfully added!");
-        form.reset();
-        loadWordCloud();
-      } else {
-        showMessage("Error: " + result.message, true);
-      }
-    } catch (err) {
-      console.error(err);
-      showMessage("Error submitting. Please try again.", true);
-    }
+    document.getElementById("name").value = name;
+    document.getElementById("book").value = book;
+    form.action = googleFormAction;
+    form.target = "hidden_iframe";
+    form.submit();
+    showMessage("Thank you for your recommendation!");
+    form.reset();
   });
-
-  function showMessage(msg, isError=false) {
+  function showMessage(msg) {
     thankMessage.style.display = "block";
-    thankMessage.style.color = isError ? "#ef4444" : "#10b981";
+    thankMessage.style.color = "#10b981";
     thankMessage.textContent = msg;
     setTimeout(() => { thankMessage.style.display = "none"; }, 2000);
   }
-
+  const sheetScriptURL = "https://script.google.com/macros/s/AKfycbzG2dC3YawEKvlNQ5lLta9shTywRy62vaq02LLH8dsocTKl0v-gPmSmqzAtD6kOZKA/exec";
   async function loadWordCloud() {
     try {
-      const res = await fetch(scriptURL);
+      const res = await fetch(sheetScriptURL);
       const data = await res.json();
       const counts = {};
       data.forEach(entry => {
-        if (entry.book) {
+        if(entry.book) {
           const b = entry.book.trim();
           counts[b] = (counts[b] || 0) + 1;
         }
@@ -95,11 +82,10 @@ document.addEventListener("DOMContentLoaded", () => {
         color: () => getComputedStyle(document.body).color,
         backgroundColor: "transparent"
       });
-    } catch (err) {
+    } catch(err) {
       console.error("Error loading word cloud:", err);
     }
   }
-
   loadWordCloud();
 });
 </script>
