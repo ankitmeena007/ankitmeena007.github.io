@@ -1,9 +1,8 @@
 ---
-title: "📚 Recommend a book"
+title: "Recommend a book"
 date: 2025-09-07 00:00:00 +0800
 categories: [Books]
 tags: [Books, Book recommendations]
-description: Share your recommendations below. Thanks!
 ---
 
 ### Share your recommendations below.
