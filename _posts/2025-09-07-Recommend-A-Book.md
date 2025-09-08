@@ -17,9 +17,9 @@ They will be added to the recommendations cloud. Thanks!
 
 <form id="book-form" class="modern-form">
   <label>Your Name (optional)</label>
-  <input type="text" id="name" name="entry.1008954829" placeholder=""/>
+  <input type="text" id="name" name="entry.1008954829" placeholder="" maxlength="50"/>
   <label>Book Recommendation</label>
-  <input type="text" id="book" name="entry.1518169936" placeholder="" required/>
+  <input type="text" id="book" name="entry.1518169936" placeholder="" required maxlength="50"/>
   <button type="submit">Submit</button>
   <p id="thank-message" class="thank-message" style="text-align:center; display:none;"></p>
 </form>
@@ -45,8 +45,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const googleFormAction = "https://docs.google.com/forms/d/1AU2pD59UoAfBe8egyBJc5NGH_kScMf4hnvuZ4_5aInM/formResponse";
   form.addEventListener("submit", (e) => {
     e.preventDefault();
-    const name = document.getElementById("name").value.trim() || "Anonymous";
-    const book = document.getElementById("book").value.trim();
+    const name = document.getElementById("name").value.trim().slice(0,50) || "Anonymous";
+    const book = document.getElementById("book").value.trim().slice(0,50);
     if (!book) return;
     document.getElementById("name").value = name;
     document.getElementById("book").value = book;
