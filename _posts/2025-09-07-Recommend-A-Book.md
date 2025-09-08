@@ -34,7 +34,7 @@ They will be added to the recommendations word cloud.
 <script src="https://cdnjs.cloudflare.com/ajax/libs/wordcloud2.js/1.1.1/wordcloud2.min.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-  const scriptURL = "https://script.google.com/macros/s/AKfycbxvXkCTLnIqi1P2yS7WzySwFQH_yTauM1NJ3w3YyGNey_3-a_H3fLP542mKkxAwEwM/exec";
+  const scriptURL = "https://script.google.com/macros/s/AKfycbx9u9xYRgF9F2vAsD5N8Y_6Ft6_OvxB80NDdrj6wNEhRUnGNKY2hAJjTdK3mS98XVE/exec";
   const form = document.getElementById("book-form");
   const submitBtn = document.getElementById("submit-btn");
   const thankMessage = document.getElementById("thank-message");
